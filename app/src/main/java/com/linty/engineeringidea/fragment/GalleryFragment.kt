@@ -2,6 +2,7 @@ package com.linty.engineeringidea.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -23,19 +24,27 @@ import android.support.annotation.RequiresPermission
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker.checkSelfPermission
 import android.util.Log
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.linty.engineeringidea.OnImageListener
 
 
-class GalleryFragment : Fragment() {
+class GalleryFragment : Fragment(), OnImageListener {
+
     @BindView(R.id.back_btn)
     lateinit var backBtn: ImageButton
     @BindView(R.id.image_recycler)
     lateinit var imageRecycler: RecyclerView
-    private var imageAdapter: ImageRecyclerAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(com.linty.engineeringidea.R.layout.gallery_fragment, container, false)
         ButterKnife.bind(this, view)
-        imageRecycler.layoutManager = GridLayoutManager(context, 3)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+            imageRecycler.layoutManager = GridLayoutManager(context!!, 3)
+        else
+            imageRecycler.layoutManager = GridLayoutManager(context!!, 5)
+
+
         //refactoring
         ActivityCompat.requestPermissions(
             activity!!,
@@ -43,7 +52,7 @@ class GalleryFragment : Fragment() {
         )
         //
         Log.i("COUNT", getImages().size.toString())
-        imageAdapter = ImageRecyclerAdapter(getImages(), this.context!!)
+        imageRecycler.adapter = ImageRecyclerAdapter(getImages(), context!!, this)
         return view
     }
 
@@ -72,6 +81,10 @@ class GalleryFragment : Fragment() {
         }
         imagecursor.close()
         return galleryImageUrls
+
+    }
+
+    override fun onImageClick(position: Int) {
 
     }
 
