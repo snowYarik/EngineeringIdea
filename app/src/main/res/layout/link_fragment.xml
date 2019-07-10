@@ -14,30 +14,20 @@
                 android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_back"
-                android:background="@null"/>
+                android:background="@null"
+                android:src="@drawable/ic_arrow_back"/>
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/gallery"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"/>
-
-        <Button
-                android:id="@+id/links_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/links"
-                android:layout_gravity="right"
-                android:textColor="@android:color/white"
-                android:background="@null"/>
+                android:textSize="18sp"
+                android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
-            android:id="@+id/image_recycler"
+            android:id="@+id/link_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-
 </LinearLayout>

@@ -14,9 +14,9 @@ import com.bumptech.glide.Glide
 import com.github.ybq.android.spinkit.SpinKitView
 
 class ImageRecyclerAdapter(
-    private var images: List<String>,
-    private val context: Context,
-    private var onImageListener: OnImageListener
+    val images: List<String>,
+    val context: Context,
+    val onImageListener: OnImageListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
@@ -40,7 +40,7 @@ class ImageRecyclerAdapter(
 
     }
 
-    private class ImageViewHolder(view: View, private var onImageListener: OnImageListener) :
+    private class ImageViewHolder(view: View, val onImageListener: OnImageListener) :
         RecyclerView.ViewHolder(view),
         View.OnClickListener {
         var imageView: ImageView = view.findViewById(R.id.image)

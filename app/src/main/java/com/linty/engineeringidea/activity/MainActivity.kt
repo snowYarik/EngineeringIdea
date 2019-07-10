@@ -1,10 +1,7 @@
 package com.linty.engineeringidea.activity
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.linty.engineeringidea.R
-import com.linty.engineeringidea.fragment.GalleryFragment
+import com.linty.engineeringidea.fragment.gallery.GalleryFragmentView
 
 //Flow:
 //1.	The main screen should have a toolbar with back button.
@@ -31,7 +28,7 @@ import com.linty.engineeringidea.fragment.GalleryFragment
 
 class MainActivity : SingleActivity() {
     override val getFragment: Fragment
-        get() = GalleryFragment()
+        get() = GalleryFragmentView()
 
 
 }

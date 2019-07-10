@@ -1,49 +1,59 @@
-package com.linty.engineeringidea.fragment
+package com.linty.engineeringidea.fragment.gallery
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.linty.engineeringidea.ImageRecyclerAdapter
-import com.linty.engineeringidea.R
-import android.provider.MediaStore
-import android.support.annotation.RequiresPermission
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.PermissionChecker.checkSelfPermission
-import android.util.Log
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.linty.engineeringidea.OnImageListener
+import com.linty.engineeringidea.R
+import com.linty.engineeringidea.links.LinkFragmentView
+import com.linty.engineeringidea.model.ImageResponse
 
 
-class GalleryFragment : Fragment(), OnImageListener {
+class GalleryFragmentView : Fragment(), OnImageListener, IView {
+
+    companion object {
+        val TAG: String? = GalleryFragmentView::class.qualifiedName
+    }
 
     @BindView(R.id.back_btn)
     lateinit var backBtn: ImageButton
     @BindView(R.id.image_recycler)
     lateinit var imageRecycler: RecyclerView
+    @BindView(R.id.links_btn)
+    lateinit var linksBtn: Button
+    lateinit var presenter: IPresenter
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        presenter = GalleryPresenter(GalleryInterector(), GalleryFragmentView())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(com.linty.engineeringidea.R.layout.gallery_fragment, container, false)
+        val view = inflater.inflate(R.layout.gallery_fragment, container, false)
         ButterKnife.bind(this, view)
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             imageRecycler.layoutManager = GridLayoutManager(context!!, 3)
         else
             imageRecycler.layoutManager = GridLayoutManager(context!!, 5)
-
 
         //refactoring
         ActivityCompat.requestPermissions(
@@ -51,7 +61,6 @@ class GalleryFragment : Fragment(), OnImageListener {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0
         )
         //
-        Log.i("COUNT", getImages().size.toString())
         imageRecycler.adapter = ImageRecyclerAdapter(getImages(), context!!, this)
         return view
     }
@@ -61,7 +70,13 @@ class GalleryFragment : Fragment(), OnImageListener {
         activity!!.finish()
     }
 
-    fun getImages(): List<String> {
+    @OnClick(R.id.links_btn)
+    fun onLinksClick() {
+        activity!!.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, LinkFragmentView())
+            .addToBackStack("").commit()
+    }
+
+    private fun getImages(): List<String> {
         val galleryImageUrls: ArrayList<String>
         val columns = arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID)
         val orderBy = MediaStore.Images.Media.DATE_TAKEN
@@ -72,7 +87,7 @@ class GalleryFragment : Fragment(), OnImageListener {
         )
 
         galleryImageUrls = ArrayList()
-
+        //TODO safe cursore
         for (i in 0 until imagecursor.getCount()) {
             imagecursor.moveToPosition(i)
             val dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Images.Media.DATA)
@@ -85,7 +100,15 @@ class GalleryFragment : Fragment(), OnImageListener {
     }
 
     override fun onImageClick(position: Int) {
+        presenter.loadImage(activity!!.baseContext, getImages()[position])
+    }
 
+    override fun successLoad(response: ImageResponse) {
+    }
+
+    override fun errorLoad(message: String) {
+        Log.i("RequestErr", message)
+        //TODO alert message or window and turn off load spinner
     }
 
 }
