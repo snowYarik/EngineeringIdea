@@ -1,10 +1,11 @@
 package com.linty.engineeringidea.model
 
 data class ImageResponse(
-    var success: Boolean,
-    var status: Int,
-    var data: UploadedImage
+    var success: Boolean?,
+    var status: Int?,
+    var data: UploadedImage?
 ) {
+
     //TODO Builder pattern with data class
     class UploadedImage(
         val id: String,

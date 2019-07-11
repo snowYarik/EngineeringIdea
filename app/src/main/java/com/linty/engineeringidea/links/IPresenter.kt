@@ -1,8 +1,12 @@
 package com.linty.engineeringidea.links
 
-import com.linty.engineeringidea.ILoadListener
+import android.content.Context
+import com.linty.engineeringidea.Link
 
 interface IPresenter {
-    fun loadLinks()
-    interface ILoadLinksListener : ILoadListener
+    fun loadLinks(context: Context)
+    interface ISelectLinksListener {
+        fun onSuccessLoad(links: List<Link>)
+        fun onErrorLoad(message: String)
+    }
 }

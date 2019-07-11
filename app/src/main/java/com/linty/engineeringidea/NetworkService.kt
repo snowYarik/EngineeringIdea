@@ -1,11 +1,14 @@
 package com.linty.engineeringidea
 
+import android.os.SystemClock
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.linty.engineeringidea.model.UploadImage
 import com.linty.engineeringidea.network.ImguAPI
+import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,6 +38,16 @@ class NetworkService {
 
         fun settingClient(): OkHttpClient.Builder {
             val client = OkHttpClient.Builder()
+            val dispatcher = Dispatcher()
+            dispatcher.maxRequests = 1
+            val interceptor = object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    SystemClock.sleep(1000)
+                    return chain.proceed(chain.request())
+                }
+            }
+            client.addNetworkInterceptor(interceptor)
+            client.dispatcher(dispatcher)
             client.addInterceptor { chain ->
                 val original = chain.request()
                 val requestBuilder = original.newBuilder()

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 
-class LinkRecyclerAdapter(val context: Context, val links: List<Link>, val linkListener: OnLinkListener) :
+class LinkRecyclerAdapter(val context: Context, var links: List<Link>, val linkListener: OnLinkListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {

@@ -40,6 +40,7 @@ class ImageRecyclerAdapter(
 
     }
 
+
     private class ImageViewHolder(view: View, val onImageListener: OnImageListener) :
         RecyclerView.ViewHolder(view),
         View.OnClickListener {
