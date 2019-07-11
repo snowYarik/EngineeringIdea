@@ -1,4 +1,4 @@
-package com.linty.engineeringidea
+package com.linty.engineeringidea.network
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -7,6 +7,9 @@ import com.google.gson.JsonSerializer
 import com.linty.engineeringidea.model.UploadImage
 import java.lang.reflect.Type
 
+/**
+ * UploadImageSerializer is a class serializer witch serialize UploadImage to Json
+ */
 class UploadImageSerializer : JsonSerializer<UploadImage> {
     override fun serialize(src: UploadImage?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
         val json = JsonObject()

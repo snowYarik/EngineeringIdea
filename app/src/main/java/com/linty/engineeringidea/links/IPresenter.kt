@@ -1,7 +1,7 @@
 package com.linty.engineeringidea.links
 
 import android.content.Context
-import com.linty.engineeringidea.Link
+import com.linty.engineeringidea.model.Link
 
 interface IPresenter {
     fun loadLinks(context: Context)

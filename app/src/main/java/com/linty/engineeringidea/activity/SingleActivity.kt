@@ -6,7 +6,15 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import com.linty.engineeringidea.R
 
+/**
+ *
+ * This class in abstract class for activity creation
+ *
+ * */
 abstract class SingleActivity : AppCompatActivity() {
+    /**
+     *@return fragment for attaching
+     */
     protected abstract val getFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {

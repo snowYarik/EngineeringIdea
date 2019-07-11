@@ -1,7 +1,7 @@
 package com.linty.engineeringidea.links
 
 import android.content.Context
-import com.linty.engineeringidea.Link
+import com.linty.engineeringidea.model.Link
 
 class LinkPresenter(val view: IVIew, val model: IInterector) : IPresenter, IPresenter.ISelectLinksListener {
     override fun loadLinks(context: Context) {

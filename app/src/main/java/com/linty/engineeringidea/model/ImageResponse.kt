@@ -1,12 +1,36 @@
 package com.linty.engineeringidea.model
 
+/**
+ * ImageResponse is a model class for image response
+ * @param success is success
+ * @param status status code
+ * @param data nested data
+ */
 data class ImageResponse(
-    var success: Boolean?,
-    var status: Int?,
-    var data: UploadedImage?
+    val success: Boolean,
+    val status: Int,
+    val data: UploadedImage
 ) {
-
-    //TODO Builder pattern with data class
+    /**
+     * UploadedImage is nested class
+     * @param id image id
+     * @param title image title
+     * @param description image description
+     * @param type image type(base64/gif/video)
+     * @param animated is animated
+     * @param width image width
+     * @param height image height
+     * @param size image size
+     * @param views count of the image views
+     * @param bandwidth ?
+     * @param vote count of the image vote
+     * @param favorite is favourite image
+     * @param account_url account url
+     * @param deletehash ?
+     * @param name image name
+     * @param link image link
+     *
+     */
     class UploadedImage(
         val id: String,
         val title: String,
@@ -24,9 +48,5 @@ data class ImageResponse(
         val deletehash: String,
         val name: String,
         val link: String
-    ) {
-        override fun toString(): String {
-            return "UploadedImage(id='$id', title='$title', description='$description', type='$type', animated=$animated, width=$width, height=$height, size=$size, views=$views, bandwidth=$bandwidth, vote='$vote', favorite=$favorite, account_url='$account_url', deletehash='$deletehash', name='$name', link='$link')"
-        }
-    }
+    )
 }

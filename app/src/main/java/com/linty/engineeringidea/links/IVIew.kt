@@ -1,6 +1,6 @@
 package com.linty.engineeringidea.links
 
-import com.linty.engineeringidea.Link
+import com.linty.engineeringidea.model.Link
 
 interface IVIew {
 

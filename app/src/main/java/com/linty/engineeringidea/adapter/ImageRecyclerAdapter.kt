@@ -1,24 +1,29 @@
-package com.linty.engineeringidea
+package com.linty.engineeringidea.adapter
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.github.ybq.android.spinkit.SpinKitView
+import com.linty.engineeringidea.listener.OnImageListener
+import com.linty.engineeringidea.R
 
+/**
+ * Class adapter for image RecyclerView
+ * @param images the list of images
+ * @param context the context
+ * @param onImageListener the image click listener
+ * */
 class ImageRecyclerAdapter(
-    val images: List<String>,
-    val context: Context,
-    val onImageListener: OnImageListener
+    private val images: List<String>,
+    private val context: Context,
+    private val onImageListener: OnImageListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         return ImageViewHolder(
             LayoutInflater.from(context).inflate(R.layout.image_recycler_include, p0, false),
@@ -40,7 +45,9 @@ class ImageRecyclerAdapter(
 
     }
 
-
+    /**
+     * Nested Class ViewHolder for ImageRecyclerAdapter
+     * */
     private class ImageViewHolder(view: View, val onImageListener: OnImageListener) :
         RecyclerView.ViewHolder(view),
         View.OnClickListener {
@@ -51,6 +58,9 @@ class ImageRecyclerAdapter(
             view.setOnClickListener(this)
         }
 
+        /**
+         * image onClick  method
+         * */
         override fun onClick(v: View?) {
             spinkit.visibility = View.VISIBLE
             onImageListener.onImageClick(adapterPosition)

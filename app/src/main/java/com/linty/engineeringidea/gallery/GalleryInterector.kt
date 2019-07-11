@@ -1,12 +1,12 @@
-package com.linty.engineeringidea.fragment.gallery
+package com.linty.engineeringidea.gallery
 
 import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.reflect.TypeToken
-import com.linty.engineeringidea.AppDatabase
-import com.linty.engineeringidea.Link
-import com.linty.engineeringidea.NetworkService
-import com.linty.engineeringidea.UploadImageSerializer
+import com.linty.engineeringidea.db.AppDatabase
+import com.linty.engineeringidea.model.Link
+import com.linty.engineeringidea.network.NetworkService
+import com.linty.engineeringidea.network.UploadImageSerializer
 import com.linty.engineeringidea.model.ImageResponse
 import com.linty.engineeringidea.model.UploadImage
 import com.linty.engineeringidea.util.ConvertUtil
@@ -17,7 +17,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Callable
 
 class GalleryInterector : IInterector {
 
@@ -38,13 +37,11 @@ class GalleryInterector : IInterector {
                 }
 
                 override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-                    val link = response.body()!!.data!!.link
+                    val link = response.body()!!.data.link
                     insertLink(context, link)
-                    uploadListener.onSuccessLoad(context, response.body()!!)
+                    uploadListener.onSuccessLoad(response.body()!!)
                 }
             })
-//        uploadListener.onSuccessLoad(context, ImageResponse(null, null, null))
-
     }
 
     @SuppressLint("CheckResult")
@@ -56,7 +53,8 @@ class GalleryInterector : IInterector {
             .subscribe({
 
             }, {
-                it.printStackTrace()
+                if (it != null)
+                    throw Exception(it.localizedMessage)
             })
     }
 

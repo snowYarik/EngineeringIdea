@@ -1,26 +1,27 @@
-package com.linty.engineeringidea
+package com.linty.engineeringidea.network
 
 import android.os.SystemClock
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.linty.engineeringidea.model.UploadImage
-import com.linty.engineeringidea.network.ImguAPI
 import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.POST
 import java.lang.reflect.Type
-import java.util.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * NetworkService is a class which has companion object for retrofit setting
+ */
 class NetworkService {
 
     companion object RetrofitBuilder {
-
+        /**
+         * The method for creating Retrofit object
+         * @param gsonConverterFactory converter factory for json
+         * @return retrofit object for ImguApi
+         */
         fun createRetrofit(gsonConverterFactory: GsonConverterFactory): ImguAPI {
             val retrofit = Retrofit.Builder().baseUrl(ImguAPI.BASE_URL)
                 .client(settingClient().build())
@@ -29,6 +30,12 @@ class NetworkService {
             return retrofit.create(ImguAPI::class.java)
         }
 
+        /**
+         * The method for creating parser for json
+         * @param type type of the class for getting or setting data from json
+         * @param typeAdapter adapter for serialize or deserialize
+         * @return converter factory for json
+         */
         fun createParser(type: Type, typeAdapter: Any): GsonConverterFactory {
             val builder = GsonBuilder()
             builder.registerTypeAdapter(type, typeAdapter)
@@ -36,7 +43,11 @@ class NetworkService {
             return GsonConverterFactory.create(gson)
         }
 
-        fun settingClient(): OkHttpClient.Builder {
+        /**
+         * The method for setting OkHttp client for retrofit
+         * @return OkHttp builder
+         */
+        private fun settingClient(): OkHttpClient.Builder {
             val client = OkHttpClient.Builder()
             val dispatcher = Dispatcher()
             dispatcher.maxRequests = 1

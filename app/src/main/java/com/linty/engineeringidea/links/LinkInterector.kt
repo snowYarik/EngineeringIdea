@@ -2,10 +2,8 @@ package com.linty.engineeringidea.links
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
-import com.linty.engineeringidea.AppDatabase
+import com.linty.engineeringidea.db.AppDatabase
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 
 class LinkInterector : IInterector {
@@ -14,8 +12,11 @@ class LinkInterector : IInterector {
         AppDatabase.getDB(context).linkDao().getAllLinks().observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe(
-                Consumer {
+                {
                     selectListener.onSuccessLoad(it)
+                }, {
+                    if (it != null)
+                        selectListener.onErrorLoad(it.localizedMessage)
                 }
             )
 

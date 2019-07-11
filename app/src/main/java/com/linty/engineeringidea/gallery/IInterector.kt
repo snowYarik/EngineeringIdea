@@ -1,7 +1,7 @@
-package com.linty.engineeringidea.fragment.gallery
+package com.linty.engineeringidea.gallery
 
 import android.content.Context
-import com.linty.engineeringidea.Link
+
 
 interface IInterector {
     fun uploadImage(context: Context, uploadListener: IPresenter.IUploadImageListener, image: String)

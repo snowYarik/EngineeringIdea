@@ -1,20 +1,15 @@
-package com.linty.engineeringidea.fragment.gallery
+package com.linty.engineeringidea.gallery
 
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,18 +19,19 @@ import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import com.linty.engineeringidea.ImageRecyclerAdapter
-import com.linty.engineeringidea.OnImageListener
+import com.linty.engineeringidea.adapter.ImageRecyclerAdapter
+import com.linty.engineeringidea.listener.OnImageListener
 import com.linty.engineeringidea.R
 import com.linty.engineeringidea.links.LinkFragmentView
 import com.linty.engineeringidea.model.ImageResponse
-import kotlinx.android.synthetic.main.image_recycler_include.*
-import kotlinx.android.synthetic.main.image_recycler_include.view.*
+import com.linty.engineeringidea.util.ViewUtil
 import kotlinx.android.synthetic.main.image_recycler_include.view.spinkit
-import java.security.Permission
 
+/**
+ *
+ *The Fragment class
+ */
 class GalleryFragmentView : Fragment(), OnImageListener, IView {
-
 
     companion object {
         val TAG: String? = GalleryFragmentView::class.qualifiedName
@@ -47,12 +43,17 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
     lateinit var imageRecycler: RecyclerView
     @BindView(R.id.links_btn)
     lateinit var linksBtn: Button
+
     lateinit var presenter: IPresenter
+    var position: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = GalleryPresenter(GalleryInterector(), this)
+        presenter = GalleryPresenter(
+            GalleryInterector(),
+            this
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -60,7 +61,8 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
         ButterKnife.bind(this, view)
         if (!checkReadExternalPermision()) {
             requestReadPermision()
-        } else imageRecycler.adapter = ImageRecyclerAdapter(getImages(), context!!, this)
+        } else imageRecycler.adapter =
+            ImageRecyclerAdapter(getImages(), context!!, this)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
             imageRecycler.layoutManager = GridLayoutManager(context!!, 3)
@@ -70,17 +72,27 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
         return view
     }
 
+    /**
+     * The listener method for back button
+     */
     @OnClick(R.id.back_btn)
     fun onBackClick() {
         activity!!.finish()
     }
 
+    /**
+     * The listener method for 'link button'
+     */
     @OnClick(R.id.links_btn)
     fun onLinksClick() {
         activity!!.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, LinkFragmentView())
             .addToBackStack("").commit()
     }
 
+    /**
+     * Method for getting images from gallery
+     * @return the list of the String URIs
+     */
     private fun getImages(): List<String> {
         val galleryImageUrls: List<String>?
         val columns = arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID)
@@ -102,23 +114,39 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
 
     }
 
+    /**
+     * onImageClick is a method for callback image click
+     * @param position the position of the image in recyclerview
+     */
     override fun onImageClick(position: Int) {
         presenter.loadImage(activity!!.baseContext, getImages()[position])
+        this.position = position
 
 
     }
 
-    override fun successLoad(context: Context, response: ImageResponse) {
-        Log.i(TAG, isAdded.toString())
-        Toast.makeText(this.context, getString(R.string.done), Toast.LENGTH_SHORT).show()
-        hideLoadSpinner()
+    /**
+     * successLoad is a method for callback success upload of the image
+     * @param response the response of the image upload
+     */
+    override fun successLoad(response: ImageResponse) {
+        Toast.makeText(context, getString(R.string.done), Toast.LENGTH_SHORT).show()
+        ViewUtil.hideView(imageRecycler.getChildAt(position).spinkit)
     }
 
-
+    /**
+     * errorLoad is a method for callback error upload of the image
+     * @param message the response message for alert dialog
+     */
     override fun errorLoad(message: String) {
-//        showAlertDialog(message, this.context!!)
+        ViewUtil.hideView(imageRecycler.getChildAt(position).spinkit)
+        ViewUtil.showAlertDialog(message, context!!)
     }
 
+    /**
+     * The method witch check READ_EXTERNAL_STORAGE permission
+     * @return is permision denied
+     */
     private fun checkReadExternalPermision(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return context!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED
@@ -126,6 +154,9 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
         return false
     }
 
+    /**
+     * Method for request READ_EXTERNAL_STORAGE window
+     */
     private fun requestReadPermision() {
         try {
             requestPermissions(
@@ -137,24 +168,14 @@ class GalleryFragmentView : Fragment(), OnImageListener, IView {
         }
     }
 
-    private fun showAlertDialog(message: String, context: Context) {
-        val dialog: AlertDialog = AlertDialog.Builder(context)
-            .setMessage(message)
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-    }
-
-    private fun hideLoadSpinner() {
-        spinkit.visibility = View.GONE
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
             if (permissions[0].equals(Manifest.permission.READ_EXTERNAL_STORAGE)
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
-                imageRecycler.adapter = ImageRecyclerAdapter(getImages(), context!!, this)
+                imageRecycler.adapter =
+                    ImageRecyclerAdapter(getImages(), context!!, this)
             }
         }
     }

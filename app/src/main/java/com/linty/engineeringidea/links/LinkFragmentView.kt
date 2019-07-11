@@ -2,24 +2,25 @@ package com.linty.engineeringidea.links
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import com.linty.engineeringidea.Link
-import com.linty.engineeringidea.LinkRecyclerAdapter
-import com.linty.engineeringidea.OnLinkListener
+import com.linty.engineeringidea.model.Link
+import com.linty.engineeringidea.adapter.LinkRecyclerAdapter
+import com.linty.engineeringidea.listener.OnLinkListener
 import com.linty.engineeringidea.R
-import com.linty.engineeringidea.fragment.gallery.GalleryFragmentView
+import com.linty.engineeringidea.gallery.GalleryFragmentView
+import com.linty.engineeringidea.util.ViewUtil
 
+/**
+ * LinkFragmentView is a view fragment class for display link page interface and interact with it
+ */
 class LinkFragmentView : Fragment(), IVIew, OnLinkListener {
 
 
@@ -48,21 +49,35 @@ class LinkFragmentView : Fragment(), IVIew, OnLinkListener {
         return view
     }
 
+    /**
+     * onBackClick is a method for listening back click
+     */
     @OnClick(R.id.back_btn)
     fun onBackClick() {
         activity!!.supportFragmentManager.popBackStack()
     }
 
+    /**
+     * successLoad is a method for callback success selecting of the link
+     * @param links the selected list of the Link
+     */
     override fun successLoad(links: List<Link>) {
-        val adapter = LinkRecyclerAdapter(context!!, links, this)
-        linkRecycler.adapter = adapter
+        linkRecycler.adapter = LinkRecyclerAdapter(context!!, links, this)
 
     }
 
+    /**
+     * errorLoad is a method for callback error selecting of the link
+     * @param message the response message for alert dialog
+     */
     override fun errorLoad(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        ViewUtil.showAlertDialog(message, context!!)
     }
 
+    /**
+     * onLinkClick is a method for callback link click
+     * @param position the position of the link in recyclerview
+     */
     override fun onLinkClick(position: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

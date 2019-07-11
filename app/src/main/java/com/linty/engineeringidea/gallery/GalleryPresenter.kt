@@ -1,16 +1,12 @@
-package com.linty.engineeringidea.fragment.gallery
+package com.linty.engineeringidea.gallery
 
 import android.content.Context
 import com.linty.engineeringidea.model.ImageResponse
 
 class GalleryPresenter(var interector: IInterector, var view: IView) : IPresenter,
     IPresenter.IUploadImageListener {
-    override fun insertLink(context: Context, link: String) {
-        interector.insertLink(context, link)
-    }
-
-    override fun onSuccessLoad(context: Context, imageResponse: ImageResponse) {
-        view.successLoad(context, imageResponse)
+    override fun onSuccessLoad(imageResponse: ImageResponse) {
+        view.successLoad(imageResponse)
     }
 
     override fun onErrorLoad(message: String) {
